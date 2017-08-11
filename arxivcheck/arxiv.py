@@ -1,8 +1,15 @@
 from __future__ import unicode_literals
 from __future__ import print_function
+from builtins import str
 import feedparser
 from doitobib.crossref import get_bib_from_doi
+from bibtexparser.bwriter import BibTexWriter
+from bibtexparser.bibdatabase import BibDatabase
 bare_url = "http://export.arxiv.org/api/query"
+
+
+months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct',
+          'nov', 'dec']
 
 
 def get_arxiv_info(arxiv_id):
@@ -16,6 +23,33 @@ def get_arxiv_info(arxiv_id):
     return found, item
 
 
+def generate_bib_from_arxiv(arxiv_item, arxiv_id):
+    arxiv_cat = arxiv_item.arxiv_primary_category["term"]
+    journal = "arxiv:"+arxiv_cat+"/"+arxiv_id
+    url = arxiv_item.link
+    title = arxiv_item.title
+    authors = arxiv_item.authors
+    first_author = authors[0]["name"].split(" ")
+    authors = " and ".join([author["name"] for author in authors])
+    published = arxiv_item.published.split("-")
+    year = published[0]
+
+    month = months[int(published[1])]
+    bib = BibDatabase()
+    bib.entries = [
+        {"journal": journal,
+         "month": month,
+         "url": url,
+         "ID": year+first_author[0]+arxiv_id,
+         "title": title,
+         "year": year,
+         "author": authors,
+         "ENTRYTYPE": "article"}]
+
+    bib =  BibTexWriter().write(bib)
+    return bib
+
+
 def check_arxiv_published(arxiv_id, abbrev_journal):
     found = False
     bib = ""
@@ -24,6 +58,6 @@ def check_arxiv_published(arxiv_id, abbrev_journal):
         if "arxiv_doi" in item:
             doi = item["arxiv_doi"]
             found, bib = get_bib_from_doi(doi, abbrev_journal)
-        # else:
-            # bib = generate_bib_from(arxiv)
+        else:
+            bib = generate_bib_from_arxiv(item, arxiv_id)
     return found, bib
