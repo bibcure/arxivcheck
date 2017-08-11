@@ -1,0 +1,64 @@
+#!/usr/bib/env python
+from __future__ import unicode_literals
+from __future__ import print_function
+import argparse
+import textwrap
+from builtins import input
+from arxivcheck.arxiv import check_arxiv_published
+
+
+def save_output_bibs(bibs, output_file):
+    with open(output_file, 'w') as bibfile:
+        for bib in bibs:
+            bibfile.write("{}\n".format(bib))
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="arxivcheck",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=textwrap.dedent('''\
+        Convert a list of arxivs in a bibfile.
+        -----------------------------------------------------
+            @author: Bruno Messias
+            @email: messias.physics@gmail.com
+            @telegram: @bruno_messias
+            @github: https://github.com/devmessias/arxivtobib
+        ''')
+    )
+
+    parser.add_argument(
+        "--inputfile", "-i",
+        type=argparse.FileType("r"),
+        help="input file"
+    )
+    parser.add_argument(
+        "--output", "-o",
+        help="bibtex output file")
+
+    args = parser.parse_known_args()
+    inlinearxiv = len(args[1]) > 0
+    if inlinearxiv:
+        arxivs = [" ".join(args[1])]
+    else:
+        arxivs = args[0].inputfile.read()
+        arxivs = [arxiv for arxiv in arxivs.split("\n") if arxiv != ""]
+    bibs = []
+    if inlinearxiv:
+        get_first = False
+    else:
+        get_first = True if input("Automatic mode?y(yes)|n(no)") == "y" else False
+    for arxiv in arxivs:
+        found, bib = check_arxiv_published(arxiv, get_first)
+        if found:
+            bibs.append(bib)
+    if len(bibs) > 0:
+        if inlinearxiv:
+            print("\n\n")
+            print(bibs[0])
+        else:
+            save_output_bibs(bibs, args[0].output)
+
+
+if __name__ == "__main__":
+    main()
