@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 from __future__ import print_function
 from builtins import str
 import feedparser
@@ -45,8 +45,11 @@ def generate_bib_from_arxiv(arxiv_item, arxiv_id):
          "year": year,
          "author": authors,
          "ENTRYTYPE": "article"}]
+    bib = BibTexWriter().write(bib)
 
-    bib =  BibTexWriter().write(bib)
+    if str(type(bib)) != "<type 'unicode'>":
+        bib = str.encode(bib)
+        bib =  str(bib, "utf-8")
     return bib
 
 
