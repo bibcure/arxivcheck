@@ -10,7 +10,7 @@ setup(
     packages = find_packages(exclude=["build",]),
     scripts=["arxivcheck/bin/arxivcheck"],
     long_description = README_TEXT,
-    install_requires=["future", "feedparser", "bibtexparser"],
+    install_requires=["future", "feedparser", "bibtexparser", "doitobib"],
     include_package_data=True,
     license="GPLv3",
     description="Generate a bibtex given a arxiv id, check if published",

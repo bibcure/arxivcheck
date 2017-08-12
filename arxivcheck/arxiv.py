@@ -53,7 +53,7 @@ def generate_bib_from_arxiv(arxiv_item, arxiv_id):
     return bib
 
 
-def check_arxiv_published(arxiv_id, abbrev_journal):
+def check_arxiv_published(arxiv_id, abbrev_journal=False):
     found = False
     bib = ""
     found, item = get_arxiv_info(arxiv_id)
