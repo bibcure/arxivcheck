@@ -25,7 +25,7 @@ def get_arxiv_info(arxiv_id):
 
 def generate_bib_from_arxiv(arxiv_item, arxiv_id):
     arxiv_cat = arxiv_item.arxiv_primary_category["term"]
-    journal = "arxiv:"+arxiv_cat+"/"+arxiv_id
+    journal = "arxiv:"+arxiv_id
     url = arxiv_item.link
     title = arxiv_item.title
     authors = arxiv_item.authors
@@ -49,7 +49,7 @@ def generate_bib_from_arxiv(arxiv_item, arxiv_id):
 
     if str(type(bib)) != "<type 'unicode'>":
         bib = str.encode(bib)
-        bib =  str(bib, "utf-8")
+        bib = str(bib, "utf-8")
     return bib
 
 
