@@ -16,9 +16,8 @@ setup(
     description="Generate a bibtex given a arxiv id, check if published",
     author="Bruno Messias",
     author_email="messias.physics@gmail.com",
-    download_url="https://github.com/devmessias/arxivcheck/archive/0.1.tar.gz",
+    download_url="https://github.com/bibcure/arxivcheck/archive/0.1.tar.gz",
     keywords=["bibtex","arxiv", "science","scientific-journals"],
-
     classifiers=[
         "Development Status :: 4 - Beta",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",

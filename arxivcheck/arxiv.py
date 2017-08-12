@@ -24,7 +24,7 @@ def get_arxiv_info(arxiv_id):
 
 
 def generate_bib_from_arxiv(arxiv_item, arxiv_id):
-    arxiv_cat = arxiv_item.arxiv_primary_category["term"]
+    # arxiv_cat = arxiv_item.arxiv_primary_category["term"]
     journal = "arxiv:"+arxiv_id
     url = arxiv_item.link
     title = arxiv_item.title
@@ -55,12 +55,13 @@ def generate_bib_from_arxiv(arxiv_item, arxiv_id):
 
 def check_arxiv_published(arxiv_id, abbrev_journal=False):
     found = False
+    published = False
     bib = ""
     found, item = get_arxiv_info(arxiv_id)
     if found:
         if "arxiv_doi" in item:
             doi = item["arxiv_doi"]
-            found, bib = get_bib_from_doi(doi, abbrev_journal)
+            published, bib = get_bib_from_doi(doi, abbrev_journal)
         else:
             bib = generate_bib_from_arxiv(item, arxiv_id)
-    return found, bib
+    return found, published, bib
