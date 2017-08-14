@@ -49,7 +49,7 @@ def main():
     else:
         get_first = True if input("Automatic mode?y(yes)|n(no)") == "y" else False
     for arxiv in arxivs:
-        found, bib = check_arxiv_published(arxiv, get_first)
+        found, published, bib = check_arxiv_published(arxiv, get_first)
         if found:
             bibs.append(bib)
     if len(bibs) > 0:
