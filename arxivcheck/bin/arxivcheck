@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import argparse
 import textwrap
-from builtins import input
 from arxivcheck.arxiv import check_arxiv_published
 
 
@@ -21,6 +20,8 @@ def main():
         Convert a list of arxivs in a bibfile.
         You also can convert a simple arxiv item, like:
         $ arxivcheck 0901.2686
+        or
+        $ arxivcheck --title "Periodic table for topological insulators"
         -----------------------------------------------------
             @author: Bruno Messias
             @email: messias.physics@gmail.com
@@ -37,25 +38,30 @@ def main():
     parser.add_argument(
         "--output", "-o",
         help="bibtex output file")
+    parser.add_argument(
+        "--title", "-t",
+        help="search in arxiv by title"
+    )
 
+    field = "id"
     args = parser.parse_known_args()
     inlinearxiv = len(args[1]) > 0
+    titlesearch = args[0].title is not None
     if inlinearxiv:
         arxivs = [" ".join(args[1])]
+    elif titlesearch:
+        field = "ti"
+        arxivs = [args[0].title]
     else:
         arxivs = args[0].inputfile.read()
         arxivs = [arxiv for arxiv in arxivs.split("\n") if arxiv != ""]
     bibs = []
-    if inlinearxiv:
-        get_first = False
-    else:
-        get_first = True if input("Automatic mode?y(yes)|n(no)") == "y" else False
     for arxiv in arxivs:
-        found, published, bib = check_arxiv_published(arxiv, get_first)
+        found, published, bib = check_arxiv_published(arxiv, field)
         if found:
             bibs.append(bib)
     if len(bibs) > 0:
-        if inlinearxiv:
+        if inlinearxiv or titlesearch:
             print("\n\n")
             print(bibs[0])
         else:

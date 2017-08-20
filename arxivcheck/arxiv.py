@@ -5,6 +5,10 @@ import feedparser
 from doitobib.crossref import get_bib_from_doi
 from bibtexparser.bwriter import BibTexWriter
 from bibtexparser.bibdatabase import BibDatabase
+try:
+    from urllib  import quote
+except ImportError:
+    from urllib.parse import quote
 bare_url = "http://export.arxiv.org/api/query"
 
 
@@ -12,20 +16,25 @@ months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct',
           'nov', 'dec']
 
 
-def get_arxiv_info(arxiv_id):
+def get_arxiv_info(value, field="id"):
     found = False
     item = {}
-    params = "?search_query=id:"+arxiv_id
-    result = feedparser.parse(bare_url+params)
+    params = "?search_query="+field+":"+quote(value)
+    # params = "?search_query="+field+":"+value
+    url = bare_url+params
+    result = feedparser.parse(url)
     if len(result.entries) > 0:
         found = True
         item = result.entries[0]
     return found, item
 
 
-def generate_bib_from_arxiv(arxiv_item, arxiv_id):
+def generate_bib_from_arxiv(arxiv_item, value, field="id"):
     # arxiv_cat = arxiv_item.arxiv_primary_category["term"]
-    journal = "arxiv:"+arxiv_id
+    if field == "ti":
+        journal = "arxiv:"+arxiv_item["id"].split("http://arxiv.org/abs/")[1]
+    else:
+        journal = "arxiv:"+value
     url = arxiv_item.link
     title = arxiv_item.title
     authors = arxiv_item.authors
@@ -40,7 +49,7 @@ def generate_bib_from_arxiv(arxiv_item, arxiv_id):
         {"journal": journal,
          "month": month,
          "url": url,
-         "ID": year+first_author[0]+arxiv_id,
+         "ID": year+first_author[0]+journal,
          "title": title,
          "year": year,
          "author": authors,
@@ -53,15 +62,15 @@ def generate_bib_from_arxiv(arxiv_item, arxiv_id):
     return bib
 
 
-def check_arxiv_published(arxiv_id, abbrev_journal=False):
+def check_arxiv_published(value, field="id", abbrev_journal=False):
     found = False
     published = False
     bib = ""
-    found, item = get_arxiv_info(arxiv_id)
+    found, item = get_arxiv_info(value, field)
     if found:
         if "arxiv_doi" in item:
             doi = item["arxiv_doi"]
             published, bib = get_bib_from_doi(doi, abbrev_journal)
         else:
-            bib = generate_bib_from_arxiv(item, arxiv_id)
+            bib = generate_bib_from_arxiv(item, value, field)
     return found, published, bib
