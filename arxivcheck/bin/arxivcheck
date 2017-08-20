@@ -19,11 +19,13 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=textwrap.dedent('''\
         Convert a list of arxivs in a bibfile.
+        You also can convert a simple arxiv item, like:
+        $ arxivcheck 0901.2686
         -----------------------------------------------------
             @author: Bruno Messias
             @email: messias.physics@gmail.com
-            @telegram: @bruno_messias
-            @github: https://github.com/devmessias/arxivtobib
+            @telegram: @brunomessias
+            @github: https://github.com/bibcure/arxivtobib
         ''')
     )
 
