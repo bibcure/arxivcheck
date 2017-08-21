@@ -2,7 +2,7 @@
 from __future__ import print_function
 from builtins import str
 import feedparser
-from doitobib.crossref import get_bib_from_doi
+from doi2bib.crossref import get_bib_from_doi
 from bibtexparser.bwriter import BibTexWriter
 from bibtexparser.bibdatabase import BibDatabase
 try:
