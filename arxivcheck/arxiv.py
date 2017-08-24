@@ -76,6 +76,23 @@ def generate_bib_from_arxiv(arxiv_item, value, field="id"):
     return bib
 
 
+def get_arxiv_pdf_link(value, field="id"):
+    link = None
+    found, items = get_arxiv_info(value, field)
+    if found:
+        arxiv_item = items[0]
+        pdf_item = list(
+            filter(
+                lambda i: i["type"] == "application/pdf",
+                arxiv_item.links
+            )
+        )
+        found = len(pdf_item) > 0
+        link = pdf_item[0]["href"] if found else None
+
+    return found, link
+
+
 def check_arxiv_published(value, field="id", get_first=True):
     found = False
     published = False
