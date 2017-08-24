@@ -76,11 +76,25 @@ def generate_bib_from_arxiv(arxiv_item, value, field="id"):
     return bib
 
 
+def get_arxiv_pdf(arxiv_item):
+    pdf_item = list(
+        filter(
+            lambda i: i["type"] == "application/pdf",
+            arxiv_item.links
+        )
+    )
+    found = len(pdf_item) > 0
+    link = pdf_item[0]["href"] if found else None
+    return found, link
+
+
 def check_arxiv_published(value, field="id", get_first=True):
     found = False
     published = False
     bib = ""
     found, items = get_arxiv_info(value, field)
+    import pdb
+    pdb.set_trace()
     if found:
         if get_first is False and field == "ti" and len(items) > 1:
             found, item = ask_which_is(value, items)
