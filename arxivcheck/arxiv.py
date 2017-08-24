@@ -9,6 +9,7 @@ try:
     from urllib import quote
 except ImportError:
     from urllib.parse import quote
+import re
 bare_url = "http://export.arxiv.org/api/query"
 
 
@@ -78,6 +79,7 @@ def generate_bib_from_arxiv(arxiv_item, value, field="id"):
 
 def get_arxiv_pdf_link(value, field="id"):
     link = None
+    value = re.sub("arxiv\:", "", value, flags=re.I)
     found, items = get_arxiv_info(value, field)
     if found:
         arxiv_item = items[0]
@@ -97,6 +99,7 @@ def check_arxiv_published(value, field="id", get_first=True):
     found = False
     published = False
     bib = ""
+    value = re.sub("arxiv\:", "", value, flags=re.I)
     found, items = get_arxiv_info(value, field)
     if found:
         if get_first is False and field == "ti" and len(items) > 1:
