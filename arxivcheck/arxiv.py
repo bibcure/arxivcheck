@@ -50,30 +50,39 @@ def generate_bib_from_arxiv(arxiv_item, value, field="id"):
         journal = "arxiv:"+arxiv_item["id"].split("http://arxiv.org/abs/")[1]
     else:
         journal = "arxiv:"+value
+
     url = arxiv_item.link
     title = arxiv_item.title
     authors = arxiv_item.authors
-    first_author = authors[0]["name"].split(" ")
-    authors = " and ".join([author["name"] for author in authors])
-    published = arxiv_item.published.split("-")
-    year = published[0]
+    if len(authors) > 0:
+        first_author = authors[0]["name"].split(" ")
+        authors = " and ".join([author["name"] for author in authors])
+    else:
+        first_author = authors
+        authors = authors
 
-    month = months[int(published[1])]
+    published = arxiv_item.published.split("-")
+    if len(published) > 1:
+        year = published[0]
+    else:
+        year = ''
     bib = BibDatabase()
     bib.entries = [
-        {"journal": journal,
-         "month": month,
-         "url": url,
-         "ID": year+first_author[0]+journal,
-         "title": title,
-         "year": year,
-         "author": authors,
-         "ENTRYTYPE": "article"}]
+        {
+            "journal": journal,
+            "url": url,
+            "ID": year+first_author[0]+journal,
+            "title": title,
+            "year": year,
+            "author": authors,
+            "ENTRYTYPE": "article"
+        }
+    ]
     bib = BibTexWriter().write(bib)
-
     if str(type(bib)) != "<type 'unicode'>":
         bib = str.encode(bib)
         bib = str(bib, "utf-8")
+
     return bib
 
 
