@@ -1,17 +1,20 @@
-# from __future__ import unicode_literals
+# encoding: utf-8
+
+from __future__ import unicode_literals
 from __future__ import print_function
 from builtins import str
+from builtins import input
 import feedparser
 from doi2bib.crossref import get_bib_from_doi
 from bibtexparser.bwriter import BibTexWriter
 from bibtexparser.bibdatabase import BibDatabase
 try:
-    from urllib import quote
+    from urllib import quote, urlencode
 except ImportError:
-    from urllib.parse import quote
+    from urllib.parse import quote, urlencode
 import re
+from unidecode import unidecode
 bare_url = "http://export.arxiv.org/api/query"
-
 
 months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct',
           'nov', 'dec']
@@ -20,10 +23,10 @@ months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct',
 def ask_which_is(title, items):
     found = False
     result = {}
-    question = "\t It is >>'{}' article?y(yes)|n(no)|q(quit)"
+    question = "\t{} It is >>'{}' article?y(yes)|n(no)|q(quit)"
     for item in items:
         w = input(question.format(
-            item["title"], title))
+            unidecode(item["title"]), unidecode(title)))
         if w == "y":
             found = True
             result = item
@@ -36,7 +39,7 @@ def ask_which_is(title, items):
 def get_arxiv_info(value, field="id"):
     found = False
     items = []
-    params = "?search_query="+field+":"+quote(value)
+    params = "?search_query="+field+":"+quote(unidecode(value))
     url = bare_url+params
     result = feedparser.parse(url)
     items = result.entries
@@ -62,10 +65,9 @@ def generate_bib_from_arxiv(arxiv_item, value, field="id"):
         authors = authors
 
     published = arxiv_item.published.split("-")
+    year = ''
     if len(published) > 1:
         year = published[0]
-    else:
-        year = ''
     bib = BibDatabase()
     bib.entries = [
         {
@@ -79,10 +81,6 @@ def generate_bib_from_arxiv(arxiv_item, value, field="id"):
         }
     ]
     bib = BibTexWriter().write(bib)
-    if str(type(bib)) != "<type 'unicode'>":
-        bib = str.encode(bib)
-        bib = str(bib, "utf-8")
-
     return bib
 
 
@@ -118,6 +116,7 @@ def check_arxiv_published(value, field="id", get_first=True):
     if found:
         if "arxiv_doi" in item:
             doi = item["arxiv_doi"]
+            print("has doi")
             published, bib = get_bib_from_doi(doi)
         else:
             bib = generate_bib_from_arxiv(item, value, field)
