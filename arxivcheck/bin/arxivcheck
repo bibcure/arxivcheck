@@ -1,10 +1,14 @@
 #!/usr/bib/env python
+# encoding: utf-8
+
 from __future__ import unicode_literals
 from __future__ import print_function
 import argparse
 import textwrap
 from arxivcheck.arxiv import check_arxiv_published
+import sys
 
+pyversion = sys.version_info[0]
 
 def save_output_bibs(bibs, output_file):
     with open(output_file, 'w') as bibfile:
@@ -58,12 +62,14 @@ def main():
     parser.set_defaults(title=False)
     args = parser.parse_known_args()
 
-    inlinearxiv = len(args[1]) > 0
+    inline_text = [c if pyversion == 3 else c.decode(sys.stdout.encoding) for c in args[1]]
+
+    inlinearxiv = len(inline_text) > 0
     titlesearch = args[0].title
     get_first = args[0].ask is False
     field = "ti" if titlesearch else "id"
     if inlinearxiv or titlesearch:
-        arxivs = [" ".join(args[1])]
+        arxivs = [" ".join(inline_text)]
     else:
         arxivs = args[0].inputfile.read()
         arxivs = [arxiv for arxiv in arxivs.split("\n") if arxiv != ""]
