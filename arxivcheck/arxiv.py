@@ -1,14 +1,13 @@
 from __future__ import unicode_literals, print_function, absolute_import
-from builtins import str
 from builtins import input
 import feedparser
 from doi2bib.crossref import get_bib_from_doi
 from bibtexparser.bwriter import BibTexWriter
 from bibtexparser.bibdatabase import BibDatabase
 try:
-    from urllib import quote, urlencode
+    from urllib import quote
 except ImportError:
-    from urllib.parse import quote, urlencode
+    from urllib.parse import quote
 import re
 from unidecode import unidecode
 bare_url = "http://export.arxiv.org/api/query"
@@ -23,7 +22,6 @@ def ask_which_is(title, items):
     question = "\n\tArxiv:{} \n\tIt is \n\t{}\n\t Correct?y(yes)|n(no)|q(quit)"
     for item in items:
         w = input(question.format(
-            item["title"], title))
             unidecode(item["title"]), unidecode(title)))
         if w == "y":
             found = True
