@@ -2,11 +2,13 @@
 
 arxivcheck is a module of [bibcure](https://github.com/bibcure/bibcure)
 and [scihub2pdf](https://github.com/bibcure/scihub2pdf)
+
 ## Install
 
 ```
 $ sudo pip install arxivcheck
 ```
+
 or if you want the full version
 
 ```

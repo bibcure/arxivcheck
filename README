@@ -3,7 +3,10 @@ Description
 
 arxivcheck is a module of
 `bibcure <https://github.com/bibcure/bibcure>`__ and
-`scihub2pdf <https://github.com/bibcure/scihub2pdf>`__ ## Install
+`scihub2pdf <https://github.com/bibcure/scihub2pdf>`__
+
+Install
+-------
 
 ::
 
