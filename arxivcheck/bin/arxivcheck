@@ -1,8 +1,5 @@
 #!/usr/bib/env python
-# encoding: utf-8
-
-from __future__ import unicode_literals
-from __future__ import print_function
+from __future__ import unicode_literals, print_function, absolute_import
 import argparse
 import textwrap
 from arxivcheck.arxiv import check_arxiv_published
