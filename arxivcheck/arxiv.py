@@ -1,7 +1,4 @@
-# encoding: utf-8
-
-from __future__ import unicode_literals
-from __future__ import print_function
+from __future__ import unicode_literals, print_function, absolute_import
 from builtins import str
 from builtins import input
 import feedparser
@@ -23,9 +20,10 @@ months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct',
 def ask_which_is(title, items):
     found = False
     result = {}
-    question = "\t{} It is >>'{}' article?y(yes)|n(no)|q(quit)"
+    question = "\n\tArxiv:{} \n\tIt is \n\t{}\n\t Correct?y(yes)|n(no)|q(quit)"
     for item in items:
         w = input(question.format(
+            item["title"], title))
             unidecode(item["title"]), unidecode(title)))
         if w == "y":
             found = True
@@ -116,8 +114,9 @@ def check_arxiv_published(value, field="id", get_first=True):
     if found:
         if "arxiv_doi" in item:
             doi = item["arxiv_doi"]
-            print("has doi")
             published, bib = get_bib_from_doi(doi)
         else:
             bib = generate_bib_from_arxiv(item, value, field)
+    else:
+        print("\t\nArxiv not found.")
     return found, published, bib
