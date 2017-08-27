@@ -3,12 +3,14 @@ from __future__ import unicode_literals, print_function, absolute_import
 import argparse
 import textwrap
 from arxivcheck.arxiv import check_arxiv_published
+import io
 import sys
 
 pyversion = sys.version_info[0]
 
+
 def save_output_bibs(bibs, output_file):
-    with open(output_file, 'w') as bibfile:
+    with io.open(output_file, 'w', encoding = "utf-8") as bibfile:
         for bib in bibs:
             bibfile.write("{}\n".format(bib))
 
@@ -34,8 +36,7 @@ def main():
     )
 
     parser.add_argument(
-        "--inputfile", "-i",
-        type=argparse.FileType("r"),
+        "--input", "-i",
         help="input file"
     )
     parser.add_argument(
@@ -68,7 +69,10 @@ def main():
     if inlinearxiv or titlesearch:
         arxivs = [" ".join(inline_text)]
     else:
-        arxivs = args[0].inputfile.read()
+        arxivs = args[0].input
+        with io.open(arxivs, "r", encoding = "utf-8") as inputfile:
+            arxivs = inputfile.read()
+
         arxivs = [arxiv for arxiv in arxivs.split("\n") if arxiv != ""]
     bibs = []
     for arxiv in arxivs:
