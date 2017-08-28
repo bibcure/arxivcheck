@@ -6,13 +6,13 @@ and [scihub2pdf](https://github.com/bibcure/scihub2pdf)
 ## Install
 
 ```
-$ sudo pip install arxivcheck
+$ sudo python /usr/bin/pip install arxivcheck
 ```
 
 or if you want the full version
 
 ```
-$ sudo pip install bibcure
+$ sudo python /usr/bin/pip install bibcure
 ```
 
 ## Features and how to use
