@@ -43,6 +43,28 @@ def get_arxiv_info(value, field="id"):
     return found, items
 
 
+def add_eprint_to_bib(bib, eprint):
+    def bibtex_error():
+        raise RuntimeError, "CrossRef returned badly formed BibTeX file."
+
+    firstbrace = bib.find('{')
+    if firstbrace == -1:
+        bibtex_error()
+
+    firstcomma = bib.find(',', firstbrace)
+    if firstcomma == -1:
+        bibtex_error()
+
+    firstnewline = bib.find('\n', firstcomma)
+    if firstnewline == -1:
+        bibtex_error()
+
+    bib = (bib[0:firstnewline] + '\n' + 
+           '        eprint={' + eprint + '},\n' +
+           '        archiveprefix={arXiv},' +
+           bib[firstnewline:])
+    return bib
+
 def generate_bib_from_arxiv(arxiv_item, value, field="id"):
     # arxiv_cat = arxiv_item.arxiv_primary_category["term"]
     if field == "ti":
@@ -113,6 +135,7 @@ def check_arxiv_published(value, field="id", get_first=True):
         if "arxiv_doi" in item:
             doi = item["arxiv_doi"]
             published, bib = get_bib_from_doi(doi)
+            bib = add_eprint_to_bib(bib, value)
         else:
             bib = generate_bib_from_arxiv(item, value, field)
     else:
