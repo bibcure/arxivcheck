@@ -120,7 +120,7 @@ def get_arxiv_pdf_link(value, field="id"):
     return found, link
 
 
-def check_arxiv_published(value, field="id", get_first=True):
+def check_arxiv_published(value, field="id", get_first=True, keep_eprint=False):
     found = False
     published = False
     bib = ""
@@ -135,7 +135,8 @@ def check_arxiv_published(value, field="id", get_first=True):
         if "arxiv_doi" in item:
             doi = item["arxiv_doi"]
             published, bib = get_bib_from_doi(doi)
-            bib = add_eprint_to_bib(bib, value)
+            if keep_eprint:
+                bib = add_eprint_to_bib(bib, value)
         else:
             bib = generate_bib_from_arxiv(item, value, field)
     else:
