@@ -45,7 +45,7 @@ def get_arxiv_info(value, field="id"):
 
 def add_eprint_to_bib(bib, eprint):
     def bibtex_error():
-        raise RuntimeError, "CrossRef returned badly formed BibTeX file."
+        raise RuntimeError("CrossRef returned badly formed BibTeX file.")
 
     firstbrace = bib.find('{')
     if firstbrace == -1:
