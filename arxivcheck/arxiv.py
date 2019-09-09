@@ -1,3 +1,9 @@
+"""
+main.py
+====================================
+The core module of my example project
+"""
+
 from __future__ import unicode_literals, print_function, absolute_import
 from builtins import input
 import feedparser
@@ -36,18 +42,22 @@ def ask_which_is(title, items):
 
 
 def get_arxiv_info(value, field="id"):
-    """
+    """Get arxiv information given
+
     Parameters
     ----------
-        value: str
-        field: str
+    value : str
+        value of the field
+    field : str
+        the field used for build the query string
+
     Returns
     -------
-        found: bool
-            True if at least one arxiv has been found
-        items: list of dicts
-            List containing all the arxiv's related
-            with the search query
+    found : bool
+        True if at least one arxiv has been found
+    items : list of dicts
+        List containing all the arxiv's related
+        with the search query
     """
     found = False
     items = []
@@ -63,6 +73,7 @@ def get_arxiv_info(value, field="id"):
 def add_eprint_to_bib(bib, eprint):
     """
     Insert the eprint information in a given bibtex string
+
     Parameters
     ----------
         bib: str
@@ -100,6 +111,7 @@ def add_eprint_to_bib(bib, eprint):
 
 def generate_bib_from_arxiv(arxiv_item, value, field="id"):
     """
+
     Parameters
     ----------
         arxiv_item: dict
@@ -169,8 +181,8 @@ def get_arxiv_pdf_link(value, field="id"):
 
 def check_arxiv_published(
         value, field="id", get_first=True, keep_eprint=False):
-
     """
+
     Parameters
     ----------
         value: str
