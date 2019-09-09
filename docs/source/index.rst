@@ -2,13 +2,14 @@ Welcome to arxivcheck's documentation!
 ======================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 3
+    :caption: Contents:
 
-arxivcheck
-==========
-.. automodule:: arxivcheck.arxiv
-	:members:
+    install
+    arxivcheck
+    examples
+
+
 
 Indices and tables
 ==================
