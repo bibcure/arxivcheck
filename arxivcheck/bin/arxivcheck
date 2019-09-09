@@ -54,7 +54,11 @@ def main():
                         action="store_true",
                         help="don't get the first found"
                         )
-
+    parser.add_argument("--eprint", "-e",
+            dest="eprint",
+            action="store_true",
+            help="put the arXiv ID in the entry for a published paper"
+            )
 
     parser.set_defaults(ask=False)
     parser.set_defaults(title=False)
@@ -76,7 +80,7 @@ def main():
         arxivs = [arxiv for arxiv in arxivs.split("\n") if arxiv != ""]
     bibs = []
     for arxiv in arxivs:
-        found, published, bib = check_arxiv_published(arxiv, field, get_first)
+        found, published, bib = check_arxiv_published(arxiv, field, get_first, args[0].eprint)
         if found:
             bibs.append(bib)
     if len(bibs) > 0:
