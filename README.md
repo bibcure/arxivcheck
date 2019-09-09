@@ -2,6 +2,10 @@
 
 arxivcheck is a module of [bibcure](https://github.com/bibcure/bibcure)
 and [scihub2pdf](https://github.com/bibcure/scihub2pdf)
+
+Documentation is available at [arxivcheck.readthedocs.io](https://arxivcheck.readthedocs.io/en/latest/)
+
+
 ![](https://raw.githubusercontent.com/bibcure/logo/master/gifs/arxivcheck.gif) 
 
 ## Install
