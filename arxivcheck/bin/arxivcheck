@@ -10,7 +10,7 @@ pyversion = sys.version_info[0]
 
 
 def save_output_bibs(bibs, output_file):
-    with io.open(output_file, 'w', encoding = "utf-8") as bibfile:
+    with io.open(output_file, 'w', encoding="utf-8") as bibfile:
         for bib in bibs:
             bibfile.write("{}\n".format(bib))
 
@@ -55,34 +55,41 @@ def main():
                         help="don't get the first found"
                         )
     parser.add_argument("--eprint", "-e",
-            dest="eprint",
-            action="store_true",
-            help="put the arXiv ID in the entry for a published paper"
-            )
+                        dest="eprint",
+                        action="store_true",
+                        help="put the arXiv ID in the entry for a published paper"
+                        )
 
     parser.set_defaults(ask=False)
     parser.set_defaults(title=False)
     args = parser.parse_known_args()
 
-    inline_text = [c if pyversion == 3 else c.decode(sys.stdout.encoding) for c in args[1]]
+    inline_text = [
+        c if pyversion == 3 else c.decode(sys.stdout.encoding) 
+        for c in args[1]]
 
     inlinearxiv = len(inline_text) > 0
     titlesearch = args[0].title
     get_first = args[0].ask is False
     field = "ti" if titlesearch else "id"
+
     if inlinearxiv or titlesearch:
         arxivs = [" ".join(inline_text)]
     else:
         arxivs = args[0].input
-        with io.open(arxivs, "r", encoding = "utf-8") as inputfile:
+        with io.open(arxivs, "r", encoding="utf-8") as inputfile:
             arxivs = inputfile.read()
 
         arxivs = [arxiv for arxiv in arxivs.split("\n") if arxiv != ""]
+
     bibs = []
     for arxiv in arxivs:
-        found, published, bib = check_arxiv_published(arxiv, field, get_first, args[0].eprint)
+        found, published, bib = check_arxiv_published(
+            arxiv, field, get_first, args[0].eprint)
+
         if found:
             bibs.append(bib)
+
     if len(bibs) > 0:
         if inlinearxiv or titlesearch:
             print("\n")

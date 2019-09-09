@@ -12,8 +12,10 @@ import re
 from unidecode import unidecode
 bare_url = "http://export.arxiv.org/api/query"
 
-months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct',
-          'nov', 'dec']
+
+months = [
+    'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct',
+    'nov', 'dec']
 
 
 def ask_which_is(title, items):
@@ -29,10 +31,24 @@ def ask_which_is(title, items):
             break
         if w == "q":
             break
+
     return found, result
 
 
 def get_arxiv_info(value, field="id"):
+    """
+    Parameters
+    ----------
+        value: str
+        field: str
+    Returns
+    -------
+        found: bool
+            True if at least one arxiv has been found
+        items: list of dicts
+            List containing all the arxiv's related
+            with the search query
+    """
     found = False
     items = []
     params = "?search_query="+field+":"+quote(unidecode(value))
@@ -40,10 +56,25 @@ def get_arxiv_info(value, field="id"):
     result = feedparser.parse(url)
     items = result.entries
     found = len(items) > 0
+
     return found, items
 
 
 def add_eprint_to_bib(bib, eprint):
+    """
+    Insert the eprint information in a given bibtex string
+    Parameters
+    ----------
+        bib: str
+            The bibtex string without the arxiv number
+        eprint: str
+            The arxiv number
+
+    Returns
+    -------
+        bib: str
+            The bibtex string with the arxiv number
+    """
     def bibtex_error():
         raise RuntimeError("CrossRef returned badly formed BibTeX file.")
 
@@ -63,12 +94,27 @@ def add_eprint_to_bib(bib, eprint):
            '        eprint={' + eprint + '},\n' +
            '        archiveprefix={arXiv},' +
            bib[firstnewline:])
+
     return bib
 
+
 def generate_bib_from_arxiv(arxiv_item, value, field="id"):
+    """
+    Parameters
+    ----------
+        arxiv_item: dict
+        value: str
+        field: str
+
+    Returns
+    -------
+        bib: str
+            The bibtex string related with the arxiv item
+    """
     # arxiv_cat = arxiv_item.arxiv_primary_category["term"]
     if field == "ti":
-        journal = "arxiv:"+arxiv_item["id"].split("http://arxiv.org/abs/")[1]
+        journal = "arxiv:"
+        journtal += arxiv_item["id"].split("http://arxiv.org/abs/")[1]
     else:
         journal = "arxiv:"+value
 
@@ -99,6 +145,7 @@ def generate_bib_from_arxiv(arxiv_item, value, field="id"):
         }
     ]
     bib = BibTexWriter().write(bib)
+
     return bib
 
 
@@ -120,7 +167,32 @@ def get_arxiv_pdf_link(value, field="id"):
     return found, link
 
 
-def check_arxiv_published(value, field="id", get_first=True, keep_eprint=False):
+def check_arxiv_published(
+        value, field="id", get_first=True, keep_eprint=False):
+
+    """
+    Parameters
+    ----------
+        value: str
+            value of the field
+        field: str
+            field used for the arxiv search API
+        get_first: bool
+        keep_eprint: bool
+            If True keep the arxiv number if the paper 
+            has already been published
+
+    Returns
+    -------
+        found: bool
+            True if found the arxiv item
+        published: bool
+            True if the arxiv has already been
+            published
+        bib: str
+            bibtext string
+    """
+
     found = False
     published = False
     bib = ""
@@ -131,6 +203,7 @@ def check_arxiv_published(value, field="id", get_first=True, keep_eprint=False):
             found, item = ask_which_is(value, items)
         else:
             item = items[0]
+
     if found:
         if "arxiv_doi" in item:
             doi = item["arxiv_doi"]
@@ -140,6 +213,8 @@ def check_arxiv_published(value, field="id", get_first=True, keep_eprint=False):
                 bib = add_eprint_to_bib(bib, eprint)
         else:
             bib = generate_bib_from_arxiv(item, value, field)
+
     else:
         print("\t\nArxiv not found.")
+
     return found, published, bib
