@@ -126,7 +126,7 @@ def generate_bib_from_arxiv(arxiv_item, value, field="id"):
     # arxiv_cat = arxiv_item.arxiv_primary_category["term"]
     if field == "ti":
         journal = "arxiv:"
-        journtal += arxiv_item["id"].split("http://arxiv.org/abs/")[1]
+        journal += arxiv_item["id"].split("http://arxiv.org/abs/")[1]
     else:
         journal = "arxiv:"+value
 
@@ -211,6 +211,14 @@ def check_arxiv_published(
     value = re.sub("arxiv\:", "", value, flags=re.I)
     found, items = get_arxiv_info(value, field)
     if found:
+        if field == "ti":
+            title = value.lower().replace(" ", "")
+            for item_arxiv in items:
+                title_arxiv = item_arxiv["title"].lower().replace(" ", "").replace("\n", "")
+                if title_arxiv == title:
+                    items = [item_arxiv]
+                    break
+        
         if get_first is False and field == "ti" and len(items) > 1:
             found, item = ask_which_is(value, items)
         else:
