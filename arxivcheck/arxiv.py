@@ -101,7 +101,7 @@ def add_eprint_to_bib(bib, eprint):
     if firstnewline == -1:
         bibtex_error()
 
-    bib = (bib[0:firstnewline] + '\n' + 
+    bib = (bib[0:firstnewline] + '\n' +
            '        eprint={' + eprint + '},\n' +
            '        archiveprefix={arXiv},' +
            bib[firstnewline:])
@@ -180,7 +180,7 @@ def get_arxiv_pdf_link(value, field="id"):
 
 
 def check_arxiv_published(
-        value, field="id", get_first=True, keep_eprint=False):
+        value, field="id", get_first=True, keep_eprint=False, verbose=True):
     """
 
     Parameters
@@ -191,8 +191,11 @@ def check_arxiv_published(
             field used for the arxiv search API
         get_first: bool
         keep_eprint: bool
-            If True keep the arxiv number if the paper 
+            If True keep the arxiv number if the paper
             has already been published
+        verbose: bool
+            If True print message if arXiv item could
+            not be found
 
     Returns
     -------
@@ -218,7 +221,7 @@ def check_arxiv_published(
                 if title_arxiv == title:
                     items = [item_arxiv]
                     break
-        
+
         if get_first is False and field == "ti" and len(items) > 1:
             found, item = ask_which_is(value, items)
         else:
@@ -234,7 +237,7 @@ def check_arxiv_published(
         else:
             bib = generate_bib_from_arxiv(item, value, field)
 
-    else:
+    elif verbose:
         print("\t\nArxiv not found.")
 
     return found, published, bib
